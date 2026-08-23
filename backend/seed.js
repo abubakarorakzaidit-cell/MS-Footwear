@@ -73,7 +73,10 @@ const products = [
     sizes: [39, 40, 41, 42, 43, 44, 45],
     stock: 15,
     featured: false,
-    images: [placeholderImage("leather-classic-1"), placeholderImage("leather-classic-2")],
+    images: [
+      placeholderImage("leather-classic-1"),
+      placeholderImage("leather-classic-2"),
+    ],
   },
   {
     name: "Premium Handmade Peshawari Chappal",
@@ -108,26 +111,36 @@ const seedAdmin = async () => {
 
   if (!email || !password) {
     console.warn(
-      "ADMIN_EMAIL / ADMIN_PASSWORD not set in .env — skipping admin creation. Set them and re-run `npm run seed`."
+      "ADMIN_EMAIL / ADMIN_PASSWORD not set in .env — skipping admin creation. Set them and re-run `npm run seed`.",
     );
     return;
   }
 
   const existing = await Admin.findOne({ email: email.toLowerCase() });
+
   if (existing) {
-    console.log(`Admin account already exists for ${email}. Skipping creation.`);
+    existing.password = password;
+    existing.name = name;
+
+    await existing.save();
+
+    console.log(`Admin account password updated for ${email}.`);
     return;
   }
 
   // Enforce single-admin rule
   const anyAdmin = await Admin.findOne();
   if (anyAdmin) {
-    console.log("An admin account already exists in the database. Only one admin is allowed. Skipping.");
+    console.log(
+      "An admin account already exists in the database. Only one admin is allowed. Skipping.",
+    );
     return;
   }
 
   await Admin.create({ name, email: email.toLowerCase(), password });
-  console.log(`Admin account created for ${email}. (Password was securely hashed.)`);
+  console.log(
+    `Admin account created for ${email}. (Password was securely hashed.)`,
+  );
 };
 
 const run = async () => {
