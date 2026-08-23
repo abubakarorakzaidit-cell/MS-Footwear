@@ -19,11 +19,18 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
+
+// CORS
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://ms-footwear-xi.vercel.app",
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
-  })
+  }),
 );
 
 // Rate limiting
@@ -32,8 +39,12 @@ const limiter = rateLimit({
   max: parseInt(process.env.RATE_LIMIT_MAX, 10) || 200,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: "Too many requests, please try again later." },
+  message: {
+    success: false,
+    message: "Too many requests, please try again later.",
+  },
 });
+
 app.use("/api", limiter);
 
 // Body parsers
@@ -42,7 +53,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get("/api/health", (req, res) => {
-  res.json({ success: true, message: "MS Footwear API is running" });
+  res.json({
+    success: true,
+    message: "MS Footwear API is running",
+  });
 });
 
 // Routes
@@ -56,6 +70,11 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`MS Footwear API running on port ${PORT} [${process.env.NODE_ENV || "development"}]`);
+  console.log(
+    `MS Footwear API running on port ${PORT} [${
+      process.env.NODE_ENV || "development"
+    }]`,
+  );
 });
