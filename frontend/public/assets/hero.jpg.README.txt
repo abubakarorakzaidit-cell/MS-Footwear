@@ -1,0 +1,7 @@
+Place your real Peshawari Chappal hero photo here as:
+  frontend/public/assets/hero.jpg
+
+Recommended size: at least 1000x1000px, square or landscape, JPG or WEBP.
+A generated placeholder SVG (hero-placeholder.svg) is used as a stand-in
+until you add a real photo. Update the <img src="/assets/hero.jpg" ...>
+references in src/pages/Home.jsx and src/pages/About.jsx once you have it.
